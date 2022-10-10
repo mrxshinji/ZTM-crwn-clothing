@@ -1,0 +1,33 @@
+import { createContext, useState, useEffect } from "react";
+
+import { getCategoriesAndDocuments } from '../utils/firebase/firebase.utils'
+
+// value to access
+export const CategoriesContext = createContext({
+  categoriesMap: {},
+});
+
+export const CategoriesProvider = ({ children }) => {
+  const [categoriesMap, setCategoriesMap] = useState({});
+  const value = { categoriesMap };
+
+  // write data from shop-data.js to db initial commit only normally done on backend
+  // useEffect(() => {
+  //   addCollectionAndDocuments('categories', SHOP_DATA);
+  // }, []);
+
+  useEffect( () => {
+    const getCategoriesMap = async () => {
+      const categoryMap = await getCategoriesAndDocuments();
+      setCategoriesMap(categoryMap);
+      
+    }
+    getCategoriesMap();
+  }, []);
+
+  return (
+    <CategoriesContext.Provider value={value}>
+      {children}
+    </CategoriesContext.Provider>
+  );
+};
