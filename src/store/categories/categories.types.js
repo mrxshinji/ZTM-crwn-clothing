@@ -1,0 +1,3 @@
+export const CATEGORIES_ACTION_TYPES = {
+    GET_CATEGORIES: "category/GET_CATEGORIES"
+}

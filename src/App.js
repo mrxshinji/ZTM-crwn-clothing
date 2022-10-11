@@ -5,9 +5,27 @@ import Shop from "./routes/Shop/Shop.components";
 import Authenthication from "./routes/Authenthication/Authenthication";
 import Checkout from "./routes/Checkout/Checkout.components";
 
-
+// redux
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { createUserDocumentFromAuth, onAuthStateChangedListener } from "./utils/firebase/firebase.utils";
+import { setCurrentUser } from './store/user/user.action'
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  // get CURRENT USER
+  useEffect(() => {
+    const unsubscribe = onAuthStateChangedListener((user) => {
+      if (user) {
+        createUserDocumentFromAuth(user);
+      } 
+      dispatch(setCurrentUser(user));
+    });
+
+    return unsubscribe;
+  }, [dispatch]); // NOT REQUIRED, it is to remove lint warnings
+
   return (
     <Routes>
       <Route path='/' element={<Navigation />}>
