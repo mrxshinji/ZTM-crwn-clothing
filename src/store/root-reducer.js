@@ -1,5 +1,4 @@
 import { combineReducers } from "redux";
-
 // reducer
 import { userReducer } from "./user/user.reducer";
 import { categoriesReducer } from "./categories/categories.reducer"

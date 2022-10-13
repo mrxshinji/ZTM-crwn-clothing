@@ -30,7 +30,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
@@ -97,7 +97,7 @@ export const createUserDocumentFromAuth = async (
   }
 
   // if user data exists
-  return userDocRef;
+  return userSnapshot;
 };
 
 // auth user 
@@ -118,3 +118,17 @@ export const signOutUser = async () => await signOut(auth);
 // listen on user signin/out
 export const onAuthStateChangedListener = (callback) =>
   onAuthStateChanged(auth, callback);
+
+// get currentUser 
+export const getCurrentUser = () => {
+  return new Promise((resolve,reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userAuth) => {
+        unsubscribe();
+        resolve(userAuth);
+      },
+      reject
+    )
+  })
+}

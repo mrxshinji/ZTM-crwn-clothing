@@ -14,13 +14,13 @@ import { useSelector } from "react-redux";
 import { selectCurrentUser } from "../../store/user/user.selector";
 import { selectIsCartOpen } from "../../store/cart/cart.selector";
 
-
-import { signOutUser } from "../../utils/firebase/firebase.utils";
+import { useDispatch } from "react-redux";
+import { signOutStart } from "../../store/user/user.action";
 
 const Navigation = () => {
-
+  const dispatch = useDispatch();
   const signOutHandler = () => {
-    signOutUser();
+    dispatch(signOutStart())
   };
 
   // user  Selector

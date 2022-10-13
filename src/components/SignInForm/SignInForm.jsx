@@ -1,14 +1,11 @@
 import { useState } from "react";
-import {
-  signInWithGooglePopup,
-  createUserDocumentFromAuth,
-  signInAuthUserWithEmailAndPassword
-} from "../../utils/firebase/firebase.utils";
 import FormInput from "../FormInput/FormInput.components";
-import {Button, BUTTON_TYPE_CLASSES} from "../Button/Button.components";
+import { Button, BUTTON_TYPE_CLASSES } from "../Button/Button.components";
 
-import {SignInContainer, ButtonsContainer} from "./SignInForm.styles";
+import { SignInContainer, ButtonsContainer } from "./SignInForm.styles";
 // import { UserContext } from "../../context/user.context";
+import { googleSignInStart, emailSignInStart } from "../../store/user/user.action";
+import { useDispatch } from "react-redux";
 
 const defaultFormFIelds = {
   email: "",
@@ -16,6 +13,7 @@ const defaultFormFIelds = {
 };
 
 const SignInForm = () => {
+  const dispatch = useDispatch();
   const [formFields, setFormFields] = useState(defaultFormFIelds);
   const { email, password } = formFields;
 
@@ -29,13 +27,18 @@ const SignInForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await signInAuthUserWithEmailAndPassword(email, password);
+      dispatch(emailSignInStart(email, password))
+      // await signInAuthUserWithEmailAndPassword(email, password);
       // setCurrentUser(user);
 
-      resetForm(); 
+      resetForm();
     } catch (err) {
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') alert("User Not found or wrong password");
-        console.log("Error:", err)
+      if (
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password"
+      )
+        alert("User Not found or wrong password");
+      console.log("Error:", err);
     }
   };
 
@@ -47,8 +50,7 @@ const SignInForm = () => {
 
   // Google SignIn
   const signInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
+    dispatch(googleSignInStart());
   };
 
   // SignInFOrm return
@@ -76,7 +78,11 @@ const SignInForm = () => {
         />
         <ButtonsContainer>
           <Button type='submit'>SIGN IN</Button>
-          <Button buttonType={BUTTON_TYPE_CLASSES.google} onClick={signInWithGoogle} type='button'>
+          <Button
+            buttonType={BUTTON_TYPE_CLASSES.google}
+            onClick={signInWithGoogle}
+            type='button'
+          >
             GOOGLE SIGN IN
           </Button>
         </ButtonsContainer>
